@@ -1,4 +1,3 @@
-from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -30,7 +29,7 @@ def login():
             EC.url_to_be("https://the-internet.herokuapp.com/secure")
         )
         
-        print("Sucesso!")
+        print("Login bem-sucedido")
         
     except:
         print("Ocorreu um erro durante o login.")
@@ -46,17 +45,20 @@ def download_csv():
         
         driver.get("https://admin:admin@the-internet.herokuapp.com/download_secure")
         
-        link = driver.find_element(By.PARTIAL_LINK_TEXT, "OrderDetails.csv")
+        link = driver.find_element(By.PARTIAL_LINK_TEXT, "Write Excel Testdata2.csv")
         link.click()
+        
         download = os.path.expanduser("~/Downloads")
-        csv_file_path = os.path.join(download, "OrderDetails.csv") 
+        arquivo_csv = os.path.join(download, "Write Excel Testdata2.csv") 
         
-        WebDriverWait(driver, 20).until(lambda driver: os.path.exists(csv_file_path))
+        WebDriverWait(driver, 20).until(lambda driver: os.path.exists(arquivo_csv))
         
-        if os.path.exists(csv_file_path):
-            print("Arquivo CSV baixado com sucesso!")
-            
-       
+        if os.path.exists(arquivo_csv):            
+            df = pd.read_csv(arquivo_csv, delimiter=';')
+            arquivo_xlsx = arquivo_csv.replace('.csv', '.xlsx')
+            df.to_excel(arquivo_xlsx, index=False)
+
+            print(f"CSV convertido para: {arquivo_xlsx}")
         
     except:
         print("Ocorreu um erro durante o download.")
@@ -66,8 +68,10 @@ def download_csv():
         
 # Etapa 3: Download e Conversão de Arquivo PDF
 def download_pdf():
+    driver = webdriver.Chrome()
+    
     try:
-        driver = webdriver.Chrome()
+        
         driver.get("https://admin:admin@the-internet.herokuapp.com/download_secure")
         
         pdf_link = driver.find_element(By.PARTIAL_LINK_TEXT, "samplePDF.pdf")
@@ -91,7 +95,7 @@ def download_pdf():
             arquivo_xlsx = arquivo_pdf.replace('.pdf', '.xlsx')
             df.to_excel(arquivo_xlsx, index=False)
         
-            print(f"PDF convertido com sucesso para: {arquivo_xlsx}")
+            print(f"PDF convertido para: {arquivo_xlsx}")
     except:
         print("Ocorreu um erro durante o download.")
         
@@ -160,4 +164,4 @@ def extracao_dados():
 
         
 if __name__ == "__main__":
-    download_pdf()
+    download_csv()
