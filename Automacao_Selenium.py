@@ -52,13 +52,12 @@ def download_csv():
         arquivo_csv = os.path.join(download, "Write Excel Testdata2.csv") 
         
         WebDriverWait(driver, 20).until(lambda driver: os.path.exists(arquivo_csv))
-        
-        if os.path.exists(arquivo_csv):            
-            df = pd.read_csv(arquivo_csv, delimiter=';')
-            arquivo_xlsx = arquivo_csv.replace('.csv', '.xlsx')
-            df.to_excel(arquivo_xlsx, index=False)
+                  
+        df = pd.read_csv(arquivo_csv, delimiter=';')
+        arquivo_xlsx = arquivo_csv.replace('.csv', '.xlsx')
+        df.to_excel(arquivo_xlsx, index=False)
 
-            print(f"CSV convertido para: {arquivo_xlsx}")
+        print(f"CSV convertido para: {arquivo_xlsx}")
         
     except:
         print("Ocorreu um erro durante o download.")
@@ -82,20 +81,21 @@ def download_pdf():
         
         WebDriverWait(driver, 20).until(lambda driver: os.path.exists(arquivo_pdf))
         
-        if os.path.exists(arquivo_pdf):
-            dados = []
-            with pdfplumber.open(arquivo_pdf) as pdf:
-                for pagina in pdf.pages:
-                    texto = pagina.extract_text()
-                    linhas = texto.split('\n')
-                    for linha in linhas:
-                        dados.append([linha])
-                        
-            df = pd.DataFrame(dados, columns=['Conteúdo'])
-            arquivo_xlsx = arquivo_pdf.replace('.pdf', '.xlsx')
-            df.to_excel(arquivo_xlsx, index=False)
         
-            print(f"PDF convertido para: {arquivo_xlsx}")
+        dados = []
+        with pdfplumber.open(arquivo_pdf) as pdf:
+            for pagina in pdf.pages:
+                texto = pagina.extract_text()
+                linhas = texto.split('\n')
+                for linha in linhas:
+                  dados.append([linha])
+                        
+        df = pd.DataFrame(dados, columns=['Conteúdo'])
+        arquivo_xlsx = arquivo_pdf.replace('.pdf', '.xlsx')
+        df.to_excel(arquivo_xlsx, index=False)
+        
+        print(f"PDF convertido para: {arquivo_xlsx}")
+        
     except:
         print("Ocorreu um erro durante o download.")
         
@@ -152,7 +152,7 @@ def extracao_dados():
         df = pd.DataFrame(dados_todas_linhas, columns=cabecalhos)
         
         diretorio_atual = os.getcwd()
-        arquivo_saida = os.path.join(diretorio_atual, "table_data.xlsx")
+        arquivo_saida = os.path.join(diretorio_atual, "tabela.xlsx")
         df.to_excel(arquivo_saida, index=False)
         print(f"Dados salvos com sucesso em {arquivo_saida}")
         
@@ -164,4 +164,8 @@ def extracao_dados():
 
         
 if __name__ == "__main__":
+    extracao_dados()
+    dropdown()
+    login()
+    download_pdf()
     download_csv()
